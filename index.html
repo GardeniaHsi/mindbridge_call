@@ -26,7 +26,6 @@
             background-color: white;
         }
 
-        /* 撥號界面樣式 */
         .dialer {
             display: flex;
             flex-direction: column;
@@ -70,12 +69,6 @@
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .key span {
-            font-size: 12px;
-            color: gray;
-            margin-top: 5px;
-        }
-
         .call-button {
             margin-top: 20px;
             width: 70px;
@@ -86,11 +79,14 @@
             justify-content: center;
             align-items: center;
             font-size: 24px;
-            color: white;
             cursor: pointer;
         }
 
-        /* 通話界面樣式 */
+        .call-button img {
+            width: 30px;
+            height: 30px;
+        }
+
         .call-screen {
             display: none;
             flex-direction: column;
@@ -104,34 +100,6 @@
             text-align: center;
         }
 
-        .call-header {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        .call-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .call-button-option {
-            width: 70px;
-            height: 70px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .call-button-option span {
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
         .end-call {
             margin-top: 50px;
             width: 70px;
@@ -141,9 +109,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
-            color: white;
             cursor: pointer;
+        }
+
+        .end-call img {
+            width: 30px;
+            height: 30px;
         }
     </style>
 </head>
@@ -166,7 +137,9 @@
                 <div class="key" onclick="pressKey('0')">0<span>+</span></div>
                 <div class="key" onclick="pressKey('#')">#</div>
             </div>
-            <button class="call-button" onclick="startCall()">📞</button>
+            <button class="call-button" onclick="startCall()">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/phone.png" alt="call">
+            </button>
         </div>
 
         <!-- 通話界面 -->
@@ -175,28 +148,15 @@
                 <h1>心橋基金會</h1>
                 <p id="call-timer">00:00</p>
             </div>
-            <div class="call-buttons">
-                <div class="call-button-option">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/mute.png" alt="mute" style="width: 24px;">
-                    <span>靜音</span>
-                </div>
-                <div class="call-button-option">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/keypad.png" alt="keypad" style="width: 24px;">
-                    <span>撥號盤</span>
-                </div>
-                <div class="call-button-option">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/speaker.png" alt="speaker" style="width: 24px;">
-                    <span>喇叭</span>
-                </div>
+            <div class="end-call" onclick="endCall()">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/phone-off.png" alt="end call">
             </div>
-            <div class="end-call" onclick="endCall()">📞</div>
         </div>
     </div>
 
     <!-- 音效 -->
     <audio id="dial-tone" src="your-dial-tone.mp3" preload="auto" loop></audio>
     <audio id="first-audio" src="your-first-audio.m4a" preload="auto"></audio>
-    <audio id="second-audio" src="your-second-audio.m4a" preload="auto"></audio>
     <audio id="end-audio" src="your-end-audio.mp3" preload="auto"></audio>
 
     <script>
@@ -221,19 +181,13 @@
             dialTone.play();
             setTimeout(() => {
                 dialTone.pause();
-                dialTone.currentTime = 0;
                 dialer.style.display = "none";
                 callScreen.style.display = "flex";
                 startTimer();
 
+                // 播放第一段音频
                 firstAudio.play();
-                firstAudio.onended = () => {
-                    setTimeout(() => {
-                        const secondAudio = document.getElementById("second-audio");
-                        secondAudio.play();
-                        secondAudio.onended = endCall;
-                    }, 10000);
-                };
+                firstAudio.onended = endCall;
             }, 3000);
         }
 
