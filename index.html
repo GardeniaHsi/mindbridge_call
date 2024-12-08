@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心橋基金會募款計畫</title>
     <style>
-        /* 样式内容保持不变 */
+        /* 样式保持不变 */
         body {
             margin: 0;
             font-family: "SF Pro Display", Arial, sans-serif;
@@ -191,15 +191,30 @@
     <audio id="end-audio" src="your-end-audio.mp3" preload="auto"></audio>
 
     <script>
- 
-document.addEventListener("DOMContentLoaded", () => {
-    document.body.addEventListener("click", () => {
-        const audio = document.getElementById("first-audio");
-        audio.play().catch(() => {
-            console.log("音频播放限制已解除");
+        // 添加强制解除音频限制的逻辑
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.addEventListener(
+                "click",
+                () => {
+                    const audio = document.getElementById("first-audio");
+                    try {
+                        const playPromise = audio.play();
+                        if (playPromise !== undefined) {
+                            playPromise
+                                .then(() => {
+                                    console.log("音频播放已成功启动");
+                                })
+                                .catch((error) => {
+                                    console.error("音频播放被限制或失败：", error);
+                                });
+                        }
+                    } catch (error) {
+                        console.error("尝试播放音频时出错：", error);
+                    }
+                },
+                { once: true }
+            );
         });
-    }, { once: true });
-});
 
         let phoneNumber = "";
 
@@ -209,54 +224,54 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         function startCall() {
-    if (!phoneNumber) {
-        alert("請輸入電話號碼！");
-        return;
-    }
+            if (!phoneNumber) {
+                alert("請輸入電話號碼！");
+                return;
+            }
 
-    const dialer = document.getElementById("dialer");
-    const callScreen = document.getElementById("call-screen");
-    const dialTone = document.getElementById("dial-tone");
-    const firstAudio = document.getElementById("first-audio");
+            const dialer = document.getElementById("dialer");
+            const callScreen = document.getElementById("call-screen");
+            const dialTone = document.getElementById("dial-tone");
+            const firstAudio = document.getElementById("first-audio");
 
-    // 撥號音效
-    dialTone.play();
-    setTimeout(() => {
-        dialTone.pause();
-        dialTone.currentTime = 0; // 停止撥號音效
-        dialer.style.display = "none"; // 隐藏拨号界面
-        callScreen.style.display = "flex"; // 显示通话界面
-        startTimer(); // 开始计时器
+            // 撥號音效
+            dialTone.play();
+            setTimeout(() => {
+                dialTone.pause();
+                dialTone.currentTime = 0; // 停止撥號音效
+                dialer.style.display = "none"; // 隐藏拨号界面
+                callScreen.style.display = "flex"; // 显示通话界面
+                startTimer(); // 开始计时器
 
-        // 撥放第一段音频
-        firstAudio.play().catch((error) => console.error("第一段音频播放失败：", error));
-        firstAudio.onended = () => {
-            console.log("第一段音频播放结束");
-        };
+                // 撥放第一段音频
+                firstAudio.play().catch((error) => console.error("第一段音频播放失败：", error));
+                firstAudio.onended = () => {
+                    console.log("第一段音频播放结束");
+                };
 
-        // 切换到拨出画面后，15 秒直接播放第二段音频
-        setTimeout(() => {
-            playSecondAudio();
-        }, 15000); // 延迟 15 秒播放第二段音频
-    }, 3000); // 撥號等待时间为 3 秒
-}
+                // 15 秒后播放第二段音频
+                setTimeout(() => {
+                    playSecondAudio();
+                }, 15000);
+            }, 3000);
+        }
 
-function playSecondAudio() {
-    const secondAudio = document.getElementById("second-audio");
-    console.log("开始播放第二段音频...");
-    secondAudio.play().catch((error) => console.error("第二段音频播放失败：", error));
-    secondAudio.onended = endCall; // 第二段音频播放结束后挂断
-}
+        function playSecondAudio() {
+            const secondAudio = document.getElementById("second-audio");
+            console.log("开始播放第二段音频...");
+            secondAudio.play().catch((error) => console.error("第二段音频播放失败：", error));
+            secondAudio.onended = endCall; // 第二段音频播放结束后挂断
+        }
 
-function endCall() {
-    const endAudio = document.getElementById("end-audio");
-    console.log("通话结束，播放挂断音效...");
-    endAudio.play().catch((error) => console.error("挂断音效播放失败：", error));
-    endAudio.onended = () => {
-        alert("通話結束");
-        location.reload(); // 重置页面
-    };
-}
+        function endCall() {
+            const endAudio = document.getElementById("end-audio");
+            console.log("通话结束，播放挂断音效...");
+            endAudio.play().catch((error) => console.error("挂断音效播放失败：", error));
+            endAudio.onended = () => {
+                alert("通話結束");
+                location.reload(); // 重置页面
+            };
+        }
     </script>
 </body>
 </html>
