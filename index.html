@@ -191,6 +191,16 @@
     <audio id="end-audio" src="your-end-audio.mp3" preload="auto"></audio>
 
     <script>
+ 
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.addEventListener("click", () => {
+        const audio = document.getElementById("first-audio");
+        audio.play().catch(() => {
+            console.log("音频播放限制已解除");
+        });
+    }, { once: true });
+});
+
         let phoneNumber = "";
 
         function pressKey(key) {
