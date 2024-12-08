@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>語音停頓偵測</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            padding: 20px;
+        }
+        button {
+            padding: 15px 20px;
+            font-size: 18px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #start {
+            background-color: #28a745;
+            color: white;
+        }
+        #stop {
+            background-color: #dc3545;
+            color: white;
+        }
+        .log {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>語音停頓偵測</h1>
+        <button id="start">開始偵測</button>
+        <button id="stop">停止偵測</button>
+        <div class="log" id="log">尚未開始偵測...</div>
+    </div>
+
+    <audio id="response" src="your-audio-response.mp3"></audio>
+
+    <script>
+        let audioContext;
+        let analyser;
+        let microphone;
+        let dataArray;
+        let silenceTimeout;
+        let isSpeaking = false;
+
+        document.getElementById('start').addEventListener('click', async () => {
+            // 啟動音頻分析
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            microphone = audioContext.createMediaStreamSource(stream);
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+
+            const bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+
+            microphone.connect(analyser);
+
+            document.getElementById('log').innerText = '開始偵測語音...';
+            detectVoice();
+        });
+
+        document.getElementById('stop').addEventListener('click', () => {
+            // 停止偵測
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+                clearTimeout(silenceTimeout);
+                isSpeaking = false;
+                document.getElementById('log').innerText = '已停止偵測';
+            }
+        });
+
+        function detectVoice() {
+            analyser.getByteFrequencyData(dataArray);
+            const averageVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
+
+            if (averageVolume > 20) { // 偵測到語音（可調整閾值）
+                if (!isSpeaking) {
+                    document.getElementById('log').innerText = '偵測到語音中...';
+                    isSpeaking = true;
+                }
+                clearTimeout(silenceTimeout);
+            } else {
+                if (isSpeaking) {
+                    silenceTimeout = setTimeout(() => {
+                        document.getElementById('log').innerText = '語音停頓，播放音檔...';
+                        const responseAudio = document.getElementById('response');
+                        responseAudio.play();
+                        isSpeaking = false;
+                    }, 1000); // 停頓 1 秒後播放
+                }
+            }
+
+            requestAnimationFrame(detectVoice);
+        }
+    </script>
+</body>
+</html>
