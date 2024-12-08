@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>模擬電話系統</title>
+    <title>心橋基金會募款計畫</title>
     <style>
+        /* 样式内容保持不变 */
         body {
             margin: 0;
             font-family: "SF Pro Display", Arial, sans-serif;
@@ -26,7 +27,6 @@
             background-color: white;
         }
 
-        /* 撥號界面樣式 */
         .dialer {
             display: flex;
             flex-direction: column;
@@ -90,7 +90,6 @@
             cursor: pointer;
         }
 
-        /* 通話界面樣式 */
         .call-screen {
             display: none;
             flex-direction: column;
@@ -125,11 +124,6 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-        }
-
-        .call-button-option span {
-            font-size: 12px;
-            margin-top: 5px;
         }
 
         .end-call {
@@ -178,15 +172,12 @@
             <div class="call-buttons">
                 <div class="call-button-option">
                     <img src="https://img.icons8.com/ios-filled/50/ffffff/mute.png" alt="mute" style="width: 24px;">
-                    <span>靜音</span>
                 </div>
                 <div class="call-button-option">
                     <img src="https://img.icons8.com/ios-filled/50/ffffff/keypad.png" alt="keypad" style="width: 24px;">
-                    <span>撥號盤</span>
                 </div>
                 <div class="call-button-option">
                     <img src="https://img.icons8.com/ios-filled/50/ffffff/speaker.png" alt="speaker" style="width: 24px;">
-                    <span>喇叭</span>
                 </div>
             </div>
             <div class="end-call" onclick="endCall()">🔴</div>
@@ -217,11 +208,9 @@
             const dialTone = document.getElementById("dial-tone");
             const firstAudio = document.getElementById("first-audio");
 
-            // 撥號音效
             dialTone.play();
             setTimeout(() => {
                 dialTone.pause();
-                dialTone.currentTime = 0;
                 dialer.style.display = "none";
                 callScreen.style.display = "flex";
                 startTimer();
@@ -229,12 +218,16 @@
                 firstAudio.play();
                 firstAudio.onended = () => {
                     setTimeout(() => {
-                        const secondAudio = document.getElementById("second-audio");
-                        secondAudio.play();
-                        secondAudio.onended = endCall;
-                    }, 10000);
+                        playSecondAudio();
+                    }, 10000); // 延迟 10 秒后播放第二段音频
                 };
             }, 3000);
+        }
+
+        function playSecondAudio() {
+            const secondAudio = document.getElementById("second-audio");
+            secondAudio.play();
+            secondAudio.onended = endCall;
         }
 
         function startTimer() {
