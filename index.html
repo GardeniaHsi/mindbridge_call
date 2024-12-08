@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心橋基金會募款計畫</title>
     <style>
-        /* 样式内容保持不变 */
         body {
             margin: 0;
             font-family: "SF Pro Display", Arial, sans-serif;
@@ -70,12 +69,6 @@
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .key span {
-            font-size: 12px;
-            color: gray;
-            margin-top: 5px;
-        }
-
         .call-button {
             margin-top: 20px;
             width: 70px;
@@ -103,29 +96,6 @@
             text-align: center;
         }
 
-        .call-header {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        .call-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .call-button-option {
-            width: 70px;
-            height: 70px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-
         .end-call {
             margin-top: 50px;
             width: 70px;
@@ -145,19 +115,19 @@
     <div class="phone">
         <!-- 撥號界面 -->
         <div class="dialer" id="dialer">
-            <div class="number-display" id="number-display"> </div>
+            <div class="number-display" id="number-display"></div>
             <div class="keypad">
                 <div class="key" onclick="pressKey('1')">1</div>
-                <div class="key" onclick="pressKey('2')">2<span>ABC</span></div>
-                <div class="key" onclick="pressKey('3')">3<span>DEF</span></div>
-                <div class="key" onclick="pressKey('4')">4<span>GHI</span></div>
-                <div class="key" onclick="pressKey('5')">5<span>JKL</span></div>
-                <div class="key" onclick="pressKey('6')">6<span>MNO</span></div>
-                <div class="key" onclick="pressKey('7')">7<span>PQRS</span></div>
-                <div class="key" onclick="pressKey('8')">8<span>TUV</span></div>
-                <div class="key" onclick="pressKey('9')">9<span>WXYZ</span></div>
+                <div class="key" onclick="pressKey('2')">2</div>
+                <div class="key" onclick="pressKey('3')">3</div>
+                <div class="key" onclick="pressKey('4')">4</div>
+                <div class="key" onclick="pressKey('5')">5</div>
+                <div class="key" onclick="pressKey('6')">6</div>
+                <div class="key" onclick="pressKey('7')">7</div>
+                <div class="key" onclick="pressKey('8')">8</div>
+                <div class="key" onclick="pressKey('9')">9</div>
                 <div class="key" onclick="pressKey('*')">*</div>
-                <div class="key" onclick="pressKey('0')">0<span>+</span></div>
+                <div class="key" onclick="pressKey('0')">0</div>
                 <div class="key" onclick="pressKey('#')">#</div>
             </div>
             <button class="call-button" onclick="startCall()">📞</button>
@@ -169,18 +139,7 @@
                 <h1>心橋基金會</h1>
                 <p id="call-timer">00:00</p>
             </div>
-            <div class="call-buttons">
-                <div class="call-button-option">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/mute.png" alt="mute" style="width: 24px;">
-                </div>
-                <div class="call-button-option">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/keypad.png" alt="keypad" style="width: 24px;">
-                </div>
-                <div class="call-button-option">
-                    <img src="https://img.icons8.com/ios-filled/50/ffffff/speaker.png" alt="speaker" style="width: 24px;">
-                </div>
-            </div>
-            <div class="end-call" onclick="endCall()">📞</div>
+            <div class="end-call" onclick="endCall()">🔴</div>
         </div>
     </div>
 
@@ -188,65 +147,4 @@
     <audio id="dial-tone" src="your-dial-tone.mp3" preload="auto" loop></audio>
     <audio id="first-audio" src="your-first-audio.m4a" preload="auto"></audio>
     <audio id="second-audio" src="your-second-audio.m4a" preload="auto"></audio>
-    <audio id="end-audio" src="your-end-audio.mp3" preload="auto"></audio>
-
-    <script>
-        let phoneNumber = "";
-
-        function pressKey(key) {
-            phoneNumber += key;
-            document.getElementById("number-display").innerText = phoneNumber;
-        }
-
-        function startCall() {
-            if (!phoneNumber) {
-                alert("請輸入電話號碼！");
-                return;
-            }
-            const dialer = document.getElementById("dialer");
-            const callScreen = document.getElementById("call-screen");
-            const dialTone = document.getElementById("dial-tone");
-            const firstAudio = document.getElementById("first-audio");
-
-            dialTone.play();
-            setTimeout(() => {
-                dialTone.pause();
-                dialer.style.display = "none";
-                callScreen.style.display = "flex";
-                startTimer();
-
-                firstAudio.play();
-                firstAudio.onended = () => {
-                    setTimeout(() => {
-                        playSecondAudio();
-                    }, 10000); // 延迟 10 秒后播放第二段音频
-                };
-            }, 3000);
-        }
-
-        function playSecondAudio() {
-            const secondAudio = document.getElementById("second-audio");
-            secondAudio.play();
-            secondAudio.onended = endCall;
-        }
-
-        function startTimer() {
-            const callTimer = document.getElementById("call-timer");
-            let callTime = 0;
-            setInterval(() => {
-                callTime++;
-                const minutes = String(Math.floor(callTime / 60)).padStart(2, "0");
-                const seconds = String(callTime % 60).padStart(2, "0");
-                callTimer.innerText = ${minutes}:${seconds};
-            }, 1000);
-        }
-
-        function endCall() {
-            const endAudio = document.getElementById("end-audio");
-            endAudio.play();
-            endAudio.onended = () => alert("通話結束");
-            setTimeout(() => location.reload(), 3000);
-        }
-    </script>
-</body>
-</html>
+    <audio id="end-audio" src="your-end-audio.mp3" preload="auto
