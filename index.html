@@ -132,8 +132,7 @@
         }
 
         .call-button-option span {
-            font-size: 12px;
-            margin-top: 5px;
+            display: none;
         }
 
         .end-call {
@@ -182,15 +181,12 @@
             <div class="call-buttons">
                 <div class="call-button-option">
                     <img src="https://img.icons8.com/ios-filled/50/ffffff/mute.png" alt="mute" style="width: 24px;">
-                    <span>靜音</span>
                 </div>
                 <div class="call-button-option">
                     <img src="https://img.icons8.com/ios-filled/50/ffffff/keypad.png" alt="keypad" style="width: 24px;">
-                    <span>撥號盤</span>
                 </div>
                 <div class="call-button-option">
                     <img src="https://img.icons8.com/ios-filled/50/ffffff/speaker.png" alt="speaker" style="width: 24px;">
-                    <span>喇叭</span>
                 </div>
             </div>
             <div class="end-call" onclick="endCall()">📞</div>
@@ -226,8 +222,7 @@
             mixAudio.play().catch(err => console.error('播放失敗:', err));
 
             mixAudio.onended = () => {
-                alert("通話結束");
-                location.reload();
+                endCall(); // 自動掛斷
             };
         }
 
@@ -240,6 +235,11 @@
                 const seconds = String(callTime % 60).padStart(2, "0");
                 callTimer.innerText = `${minutes}:${seconds}`;
             }, 1000);
+        }
+
+        function endCall() {
+            alert("通話結束");
+            location.reload();
         }
     </script>
 </body>
