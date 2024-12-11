@@ -226,13 +226,7 @@
                 startTimer();
 
                 firstAudio.play();
-                firstAudio.onended = () => {
-                    setTimeout(() => {
-                        const secondAudio = document.getElementById("second-audio");
-                        secondAudio.play();
-                        secondAudio.onended = endCall;
-                    }, 10000);
-                };
+                firstAudio.onended = endCall;
             }, 3000);
         }
 
@@ -243,7 +237,7 @@
                 callTime++;
                 const minutes = String(Math.floor(callTime / 60)).padStart(2, "0");
                 const seconds = String(callTime % 60).padStart(2, "0");
-                callTimer.innerText = ${minutes}:${seconds};
+                callTimer.innerText = `${minutes}:${seconds}`;
             }, 1000);
         }
 
