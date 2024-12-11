@@ -127,6 +127,10 @@
             cursor: pointer;
         }
 
+        .call-button-option img {
+            filter: invert(1);
+        }
+
         .call-button-option span {
             font-size: 12px;
             margin-top: 5px;
@@ -194,9 +198,7 @@
     </div>
 
     <!-- 音效 -->
-    <audio id="dial-tone" src="your-dial-tone.mp3" preload="auto" loop></audio>
-    <audio id="first-audio" src="your-first-audio.mp3" preload="auto"></audio>
-    <audio id="end-audio" src="your-end-audio.mp3" preload="auto"></audio>
+    <audio id="mix-audio" src="mix_audio.mp3" preload="auto"></audio>
 
     <script>
         let phoneNumber = "";
@@ -213,21 +215,20 @@
             }
             const dialer = document.getElementById("dialer");
             const callScreen = document.getElementById("call-screen");
-            const dialTone = document.getElementById("dial-tone");
-            const firstAudio = document.getElementById("first-audio");
+            const mixAudio = document.getElementById("mix-audio");
 
-            // 撥號音效
-            dialTone.play();
-            setTimeout(() => {
-                dialTone.pause();
-                dialTone.currentTime = 0;
-                dialer.style.display = "none";
-                callScreen.style.display = "flex";
-                startTimer();
+            dialer.style.display = "none";
+            callScreen.style.display = "flex";
+            startTimer();
 
-                firstAudio.play();
-                firstAudio.onended = endCall;
-            }, 3000);
+            mixAudio.currentTime = 0; // 從頭播放音效
+            mixAudio.volume = 1;
+            mixAudio.play().catch(err => console.error('播放失敗:', err));
+
+            mixAudio.onended = () => {
+                alert("通話結束");
+                location.reload();
+            };
         }
 
         function startTimer() {
@@ -239,13 +240,6 @@
                 const seconds = String(callTime % 60).padStart(2, "0");
                 callTimer.innerText = `${minutes}:${seconds}`;
             }, 1000);
-        }
-
-        function endCall() {
-            const endAudio = document.getElementById("end-audio");
-            endAudio.play();
-            endAudio.onended = () => alert("通話結束");
-            setTimeout(() => location.reload(), 3000);
         }
     </script>
 </body>
